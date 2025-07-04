@@ -3,136 +3,73 @@
 ## Overview
 This is a comprehensive e-commerce system implementation in Java that demonstrates low-level design best practices and SOLID principles.
 
-## Design Principles Applied
-
-### 1. Single Responsibility Principle (SRP)
-- Each class has a single, well-defined responsibility
-- `Product` handles product properties
-- `Cart` manages cart operations
-- `CheckoutService` handles checkout logic
-- `ShippingService` manages shipping operations
-
-### 2. Open/Closed Principle (OCP)
-- Product hierarchy is open for extension (new product types) but closed for modification
-- New product types can be added without changing existing code
-
-### 3. Interface Segregation Principle (ISP)
-- `Expirable` interface only for products that can expire
-- `Shippable` interface only for products that require shipping
-- Clients depend only on interfaces they use
-
-### 4. Dependency Inversion Principle (DIP)
-- `CheckoutService` depends on `ShippingService` abstraction
-- High-level modules don't depend on low-level modules
-
-### 5. Liskov Substitution Principle (LSP)
-- All product subtypes can be substituted for the base `Product` class
-- Behavioral contracts are maintained across inheritance hierarchy
-
-## Architecture
-
-### Model Layer
-- **Product (Abstract)**: Base class for all products
-- **PerishableProduct**: Products that expire and require shipping (Cheese, Biscuits)
-- **ElectronicProduct**: Products that require shipping but don't expire (TV, Mobile)
-- **DigitalProduct**: Products that don't expire and don't require shipping (Scratch cards)
-- **Cart**: Shopping cart management
-- **CartItem**: Individual cart item representation
-- **Customer**: Customer entity with balance management
-
-### Service Layer
-- **CheckoutService**: Handles the complete checkout process
-- **ShippingService**: Manages shipping logistics and cost calculation
-
-### Exception Layer
-- **CheckoutException**: Base checkout exception
-- **InsufficientBalanceException**: Insufficient customer balance
-- **OutOfStockException**: Product out of stock
-- **ProductExpiredException**: Product has expired
-
-## Features Implemented
-
-1. ✅ Product management with name, price, and quantity
-2. ✅ Expirable products (Cheese, Biscuits) with expiry date validation
-3. ✅ Shippable products with weight management
-4. ✅ Digital products that don't require shipping
-5. ✅ Cart operations with quantity validation
-6. ✅ Comprehensive checkout process with:
-   - Order subtotal calculation
-   - Shipping fees calculation
-   - Total amount computation
-   - Customer balance validation and deduction
-   - Inventory management
-7. ✅ Error handling for:
-   - Empty cart
-   - Insufficient balance
-   - Out of stock products
-   - Expired products
-8. ✅ Shipping service integration with weight-based cost calculation
-9. ✅ Receipt generation with detailed breakdown
-
-## Key Design Decisions
-
-### Product Hierarchy
-- Used abstract base class `Product` with concrete implementations
-- Applied composition over inheritance for behaviors (Expirable, Shippable)
-- Each product type implements only relevant interfaces
-
-### Error Handling
-- Custom exception hierarchy for different error scenarios
-- Comprehensive validation before processing checkout
-- Graceful error messages for better user experience
-
-### Service Layer
-- Separated business logic into dedicated service classes
-- Dependency injection for better testability
-- Clear separation of concerns
-
 ## Running the Application
 
-### Using Makefile (Recommended)
+1. using `make`
+
 ```bash
-# Compile and run (default target)
-make
 
-# Or explicitly run
-make run
+$ make
+Compiling Java source files...
+Compilation completed successfully!
+Running E-Commerce System...
+==================================
+=== E-COMMERCE SYSTEM DEMO ===
 
-# Clean compiled files
-make clean
+Test Case 1: Successful checkout
+Cart contents:
+- 2x Cheese @ 100.0
+- 1x TV @ 500.0
+- 1x Mobile scratch card @ 50.0
 
-# Force rebuild (clean + compile + run)
-make rebuild
+Customer before checkout: Customer: John Doe (Balance: 1000.00)
+** Shipment notice **
+1x Cheese 200g
+1x Cheese 200g
+1x TV 15.0kg
+Total package weight 15.4kg
+** Checkout receipt **
+2x Cheese 200
+1x TV 500
+1x Mobile scratch card 50
+----------------------
+Subtotal 750
+Shipping 159
+Amount 909
+Customer balance after payment: 91.00
 
-# Show all available commands
-make help
+Checkout completed successfully!
+Customer after checkout: Customer: John Doe (Balance: 91.00)
+
+==================================================
+
+Test Case 2: Empty cart error
+Expected error caught: Cart is empty
+
+==================================================
+
+Test Case 3: Insufficient balance error
+Attempting to buy 2 TVs (1000 total)
+Customer balance: 91.0
+Expected error caught: Insufficient balance. Required: 1305.00, Available: 91.00
+
+==================================================
+
+Test Case 4: Out of stock error
+Expected error caught: Insufficient stock for Biscuits. Available: 5, Requested: 10
+
+==================================================
+
+Test Case 5: Expired product error
+Expected error caught: Product Expired Milk has expired on 2025-07-03
+
+==================================================
+
+Test Case 6: Digital products only (no shipping)
+Cart with digital products only:
+- 3x Mobile scratch card
+
+Customer before checkout: Customer: John Doe (Balance: 91.00)
+Error: Insufficient balance. Required: 150.00, Available: 91.00
+
 ```
-
-### Manual Compilation (Alternative)
-```bash
-# Compile
-javac -d bin src/main/java/com/ecommerce/**/*.java
-
-# Run
-java -cp bin com.ecommerce.Main
-```
-
-## Test Cases Covered
-
-1. **Successful Checkout**: Mixed products with shipping and digital items
-2. **Empty Cart Error**: Attempting checkout with empty cart
-3. **Insufficient Balance**: Customer doesn't have enough money
-4. **Out of Stock**: Requesting more quantity than available
-5. **Expired Product**: Attempting to buy expired items
-6. **Digital Only**: Checkout with only digital products (no shipping)
-
-## Future Enhancements
-
-1. Database integration for persistence
-2. User authentication and authorization
-3. Multiple payment methods
-4. Order history and tracking
-5. Inventory management system
-6. Discount and promotion system
-7. Multi-currency support
-8. REST API endpoints
